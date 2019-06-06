@@ -1,0 +1,1 @@
+This project contains all the files necessary to create the stack che.
