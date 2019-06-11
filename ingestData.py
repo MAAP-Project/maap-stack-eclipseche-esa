@@ -124,7 +124,7 @@ def ingestPrivateData(propertiesPath):
                 print("4- File correctly copied")
                 
         ######We call the back end service to start the ingestion
-        ingestTheData(criteria_list)
+        ingestTheData(criteria_list, folder_destination+"/"+os.path.basename(criteria_list['dataPath']))
     else:
         print("Please, fill all the mandatories variables !!!!!!!!")
         
