@@ -66,9 +66,11 @@ def ingestPrivateData(propertiesPath):
             if len(polarization) > 0:
                 criteria_list['polarization'] =  polarization 
                 print(' 2.4- The polarization is '+ polarization)
+            '''
             else:
                 allVariableAreFilled =  False;
                 print(' 2.4- The polarization is mandatory')
+            '''
         except:
             pass
 
@@ -78,11 +80,14 @@ def ingestPrivateData(propertiesPath):
             if len(sub_region_name) > 0:
                 criteria_list['subregionName'] =  sub_region_name 
                 print(' 2.5- The sub region is '+ sub_region_name)
+            '''
             else:
                 allVariableAreFilled =  False;
-                print(' 2.5- The sub region is mandatory')               
+                print(' 2.5- The sub region is mandatory')
+            '''             
         except:
             pass
+        '''
         try : 
             collection_name = data_criteria['collection_name']
             if len(collection_name) > 0:
@@ -93,6 +98,7 @@ def ingestPrivateData(propertiesPath):
                 print(' 2.4- The collection is mandatory')     
         except:
             pass
+        '''
             
 
     else:
