@@ -66,11 +66,13 @@ def ingestPrivateData(propertiesPath):
             if len(polarization) > 0:
                 criteria_list['polarization'] =  polarization 
                 print(' 2.4- The polarization is '+ polarization)
-            '''
             else:
+                criteria_list['polarization'] =  None 
+            '''
                 allVariableAreFilled =  False;
                 print(' 2.4- The polarization is mandatory')
             '''
+            
         except:
             pass
 
@@ -80,11 +82,14 @@ def ingestPrivateData(propertiesPath):
             if len(sub_region_name) > 0:
                 criteria_list['subregionName'] =  sub_region_name 
                 print(' 2.5- The sub region is '+ sub_region_name)
-            '''
+           
             else:
+                '''
                 allVariableAreFilled =  False;
                 print(' 2.5- The sub region is mandatory')
-            '''             
+                '''
+                criteria_list['subregionName'] =  None 
+                       
         except:
             pass
         '''
@@ -132,7 +137,7 @@ def ingestPrivateData(propertiesPath):
         ######We call the back end service to start the ingestion
         ingestTheData(criteria_list, folder_destination+"/"+os.path.basename(criteria_list['dataPath']))
     else:
-        print("Please, fill all the mandatories variables !!!!!!!!")
+        print("Not all mandatory fields are filled.")
         
         
 #########Function to call the back end and check the id of the user      
@@ -165,11 +170,14 @@ def sendARequest(url) :
             print('ERROR: ' + str(e))
             logging.error(str(e))
 #########################################################################
-def ingestTheData(criteria_list):
+def ingestTheData(criteria_list, destination):
        
         print('5- Your metadata are : ' + str(criteria_list))
-        url = url_root + "catalogue/granule/private/add?dataPath=" + criteria_list['dataPath'] + "&subregionName=" + criteria_list['subregionName'] + "&polarization=" +criteria_list['polarization'] + "&dataFormat=" + criteria_list['dataFormat'] + "&collectionName=" + criteria_list['collectionName'] + "&userId=" + str(criteria_list['userId'])
-        #print(url)
+        print('destination')
+        url = url_root + "catalogue/granule/private/add?dataPath=" + destination  + "&dataFormat=" + criteria_list['dataFormat'] + "&userId=" + str(criteria_list['userId'])
+        print(url)
+        #"&subregionName=" + criteria_list['subregionName'] + 
+        #+ "&polarization=" +criteria_list['polarization']
         response = requests.get(url)
         json_str = response.text
         code = response.status_code
@@ -191,9 +199,9 @@ def isROIfileExistAll(datapath) :
     for i in range(len(listeOfRoi)):
         filePath = listeOfRoi[i]
         if Path(filePath).is_file():
-            print("ROI file find "+filePath)
+            print("ROI file found at  "+filePath)
         else:   
-            print("The ROI file is missing "+filePath)
+            print("A mandatory ROI file is missing "+filePath)
             listeEmpty = []
             return listeEmpty
     
