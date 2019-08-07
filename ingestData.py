@@ -50,13 +50,13 @@ def ingestPrivateData(propertiesPath):
         except:
             pass
         try : 
-            data_format = data_criteria['data_format']
-            if len(data_format) > 0:
-                criteria_list['dataFormat'] =  data_format 
-                print(' 2.3- The data format is '+ data_format)
+            product_type = data_criteria['product_type']
+            if len(product_type) > 0:
+                criteria_list['dataFormat'] =  product_type 
+                print(' 2.3- The product type is '+ product_type)
             else:
                 allVariableAreFilled =  False;
-                print(' 2.3- The data format is mandatory')
+                print(' 2.3- The product type is mandatory')
         except:
             pass        
                
@@ -176,6 +176,12 @@ def ingestTheData(criteria_list, destination):
         print('destination')
         url = url_root + "catalogue/granule/private/add?dataPath=" + destination  + "&dataFormat=" + criteria_list['dataFormat'] + "&userId=" + str(criteria_list['userId'])
         print(url)
+		if criteria_list['subregionName']
+			url = url+ "&subregionName=" + criteria_list['subregionName']
+		if criteria_list['polarization']
+			url = url+ "&polarization=" + criteria_list['polarization']
+		
+		print(url)
         #"&subregionName=" + criteria_list['subregionName'] + 
         #+ "&polarization=" +criteria_list['polarization']
         response = requests.get(url)
