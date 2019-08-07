@@ -76,11 +76,12 @@ COPY .gitlab-ci.yml /usr/bmap/.gitlab-ci.yml
 COPY RestClient.py /usr/bmap/RestClient.py
 COPY quicklook_raster.py /usr/bmap/quicklook_raster.py
 COPY ingestData.py /usr/bmap/ingestData.py
-COPY shareData.sh /usr/bmap/shareData.sh
+COPY ingestData.sh /usr/bmap/ingestData.sh
 
-RUN sudo chmod +x /usr/bmap/initTemplate.sh
-RUN sudo chmod +x /usr/bmap/shareAlgorithm.sh
-RUN sudo chmod +x /usr/bmap/shareData.sh
+USER root
+RUN  chmod +x /usr/bmap/initTemplate.sh
+RUN  chmod +x /usr/bmap/shareAlgorithm.sh
+RUN  chmod +x /usr/bmap/ingestData.sh
 ENV PATH="/usr/bmap/:${PATH}"
 ENV PYTHONPATH="/usr/bmap/:${PYTHONPATH}"
 #We add env variable to request the back end
