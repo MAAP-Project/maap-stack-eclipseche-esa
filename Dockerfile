@@ -85,7 +85,7 @@ RUN  chmod +x /usr/bmap/ingestData.sh
 ENV PATH="/usr/bmap/:${PATH}"
 ENV PYTHONPATH="/usr/bmap/:${PYTHONPATH}"
 #We add env variable to request the back end
-ENV BMAP_BACKEND_URL=http://backend.biomass-maap.com/bmap-web/
+ENV BMAP_BACKEND_URL=http://http://backend-val.biomass-maap.com/bmap-web/
 
     
     
