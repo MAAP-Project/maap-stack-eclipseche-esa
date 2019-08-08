@@ -39,7 +39,8 @@ RUN  sudo apt-get update && \
      sudo rm -rf geopandas && \
      sudo apt-get -y install libgdal1-dev && \
      sudo pip install --user fiona && \
-     sudo sudo apt-get install python-shapely
+     sudo sudo apt-get install python-shapely && \
+	 sudo pip install opencv-python
      
 #INstallation of Octave
 RUN  sudo apt-add-repository ppa:octave/stable && \
@@ -52,8 +53,7 @@ RUN  sudo apt-add-repository ppa:octave/stable && \
      sudo apt -y upgrade && \
      sudo apt install -y gdal-bin libgdal-dev && \
      sudo pip install requests && \
-     sudo pip install conda && \
-	 sudo pip install opencv-python
+     sudo pip install conda 
 
 
 
