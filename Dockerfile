@@ -52,7 +52,8 @@ RUN  sudo apt-add-repository ppa:octave/stable && \
      sudo apt -y upgrade && \
      sudo apt install -y gdal-bin libgdal-dev && \
      sudo pip install requests && \
-     sudo pip install conda
+     sudo pip install conda && \
+	 sudo pip install opencv-python
 
 
 
