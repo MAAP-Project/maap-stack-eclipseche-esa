@@ -38,7 +38,8 @@ RUN  apt-get update && \
       rm -rf geopandas && \
       apt-get -y install libgdal1-dev && \
       pip install --user fiona && \
-       apt-get install python-shapely 
+       apt-get install python-shapely && \
+       pip install opencv-python
      
 #INstallation of Octave
 RUN   apt-add-repository ppa:octave/stable && \
