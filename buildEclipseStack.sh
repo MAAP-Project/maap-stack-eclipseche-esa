@@ -1,3 +1,3 @@
-docker build -t kosted/bmap-stack .
-docker run --rm kosted/bmap-stack pip freeze
-docker push kosted/bmap-stack
+docker build -t kosted/bmap-stack:latest .
+docker run --rm kosted/bmap-stack:latest pip freeze
+docker push kosted/bmap-stack:latest
