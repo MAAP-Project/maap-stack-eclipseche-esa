@@ -12,7 +12,6 @@ from properties.p import Property
 from typing import Iterable
 
 
-
 logging.basicConfig(filename='RestClient.log', level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 url = os.environ['BMAP_BACKEND_URL'] + 'catalogue/granule/'
 
@@ -174,15 +173,24 @@ def download_granule(granule_id: str, target_Dir: str) -> Iterable:
     try:
         response = requests.get(url + 'granulename/' + granule_id)
         json_str = response.text
-        print(target_Dir)
         # if the response body contains something
         if len(json_str) > 0:
             json_obj = json.loads(response.text)
             for data in json_obj['Granule']['dataList'][:] :
-                urlToData = data['Data']['urlToData']
-                completeName = os.path.join(target_Dir, data['Data']['fileName'])
-                r = requests.get(urlToData, allow_redirects=True)
-                open(completeName, 'wb').write(r.content)
+                #print(target_Dir+'/'+data['Data']['fileName'])
+                my_file = Path(target_Dir+'/'+data['Data']['fileName'])
+                urlToData=''
+                if my_file.is_file():
+                    print(data['Data']['fileName']+' already exists in targetDir: '+ target_Dir)
+                    logging.info(data['Data']['fileName']+' already exists in targetDir: '+ target_Dir)
+                else:
+                    urlToData = data['Data']['urlToData']
+                    completeName = os.path.join(target_Dir, data['Data']['fileName'])
+                    r = requests.get(urlToData, allow_redirects=True)
+                    open(completeName, 'wb').write(r.content)
+                    print(data['Data']['fileName']+' has been successfully downloaded in targetDir: '+ target_Dir)
+                    logging.info(data['Data']['fileName']+' has been successfully downloaded in targetDir: '+ target_Dir)
+                    
             return urlToData
         else:
             print('INFO: There is no data with ID: ' + granule_id)
@@ -191,6 +199,7 @@ def download_granule(granule_id: str, target_Dir: str) -> Iterable:
     except requests.exceptions.RequestException as e:
         print('ERROR: ' + str(e))
         logging.error(str(e))
+
 
 
 
