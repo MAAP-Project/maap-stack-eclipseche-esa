@@ -17,52 +17,51 @@ LABEL maintainer="teddy.kossoko@capgemini.com"
 LABEL version="1.0"
 LABEL description="Docker file based on ubuntu for eclipse-che workspaces for Biomass project"
 
-RUN sudo chmod 777 /etc/apt/sources.list
-RUN sudo apt-get update
+USER root
+#RUN  chmod 777 /etc/apt/sources.list
+RUN  apt-get update
 
 # Installation of pip, gdal, python3, matplotlib, doxyen
 # installation of scikit-learn, pandas, geopandas, fiona,  shapely
-RUN  sudo apt-get update && \
-     sudo apt-get install -y software-properties-common python-software-properties && \
-     sudo apt-get install -y python3-lxml && \
-     sudo apt-get install -y python3-pip &&\
-     sudo pip3 install scipy==0.19.1 && \
-     sudo pip3 install matplotlib && \
-     sudo pip3 install property && \
-     sudo pip install pillow && \
-     sudo pip install -U scikit-learn && \
-     sudo pip install pandas && \
-     sudo git clone https://github.com/geopandas/geopandas.git && \
+RUN  apt-get update && \
+      apt-get install -y software-properties-common python-software-properties python3-lxml python3-pip &&\
+      pip3 install scipy==0.19.1 && \
+      pip3 install matplotlib && \
+      pip3 install property && \
+      pip install pillow && \
+      pip install -U scikit-learn && \
+      pip install pandas && \
+      git clone https://github.com/geopandas/geopandas.git && \
      cd geopandas && \
-     sudo pip install . && \
+      pip install . && \
      cd .. && \
-     sudo rm -rf geopandas && \
-     sudo apt-get -y install libgdal1-dev && \
-     sudo pip install --user fiona && \
-     sudo sudo apt-get install python-shapely
+      rm -rf geopandas && \
+      apt-get -y install libgdal1-dev && \
+      pip install --user fiona && \
+       apt-get install python-shapely && \
+       pip install opencv-python
      
 #INstallation of Octave
-RUN  sudo apt-add-repository ppa:octave/stable && \
-     sudo apt-get update && \
-     sudo apt-get -y install octave && \
-     sudo apt-get -y install doxygen  && \
-     sudo pip3 install --upgrade pip && \
-     sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable && \
-     sudo apt update && \
-     sudo apt -y upgrade && \
-     sudo apt install -y gdal-bin libgdal-dev && \
-     sudo pip install requests && \
-     sudo pip install conda
-
+RUN   apt-add-repository ppa:octave/stable && \
+      apt-get update && \
+      apt-get -y install octave && \
+      apt-get -y install doxygen  && \
+      pip3 install --upgrade pip && \
+      add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable && \
+      apt update && \
+      apt -y upgrade && \
+      apt install -y gdal-bin libgdal-dev && \
+      pip install requests && \
+      pip install conda 
 
 
 # installation of GDL
-RUN sudo apt -y install gnudatalanguage
+RUN  apt -y install gnudatalanguage
 
 # install gdal and matplotlib with CONDA
 #RUN conda install -y gdal matplotlib
 
-RUN sudo pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL==`gdal-config --version`
+RUN  pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL==`gdal-config --version`
 
 # We add the script folder and the zip file to be able to unzip the structure of the project
 COPY initTemplate.sh /usr/bmap/initTemplate.sh
@@ -78,14 +77,14 @@ COPY quicklook_raster.py /usr/bmap/quicklook_raster.py
 COPY ingestData.py /usr/bmap/ingestData.py
 COPY ingestData.sh /usr/bmap/ingestData.sh
 
-USER root
 RUN  chmod +x /usr/bmap/initTemplate.sh
 RUN  chmod +x /usr/bmap/shareAlgorithm.sh
 RUN  chmod +x /usr/bmap/ingestData.sh
 ENV PATH="/usr/bmap/:${PATH}"
 ENV PYTHONPATH="/usr/bmap/:${PYTHONPATH}"
 #We add env variable to request the back end
-ENV BMAP_BACKEND_URL=http://backend.biomass-maap.com/bmap-web/
+ENV BMAP_BACKEND_URL=http://backend-val.biomass-maap.com/bmap-web/
 
+USER user
     
     
