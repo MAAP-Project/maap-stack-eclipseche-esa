@@ -7,7 +7,7 @@ stages:
   - test
 
 services:
-  - docker:dind
+  - docker:18.09.7-dind
 
 variables:
     DOCKER_DRIVER: overlay
