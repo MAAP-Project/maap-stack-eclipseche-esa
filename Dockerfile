@@ -76,7 +76,9 @@ COPY RestClient.py /usr/bmap/RestClient.py
 COPY quicklook_raster.py /usr/bmap/quicklook_raster.py
 COPY ingestData.py /usr/bmap/ingestData.py
 COPY ingestData.sh /usr/bmap/ingestData.sh
+COPY OWSLib /usr/bmap/OWSLib
 
+RUN  chmod +x /usr/bmap/OWSLib
 RUN  chmod +x /usr/bmap/initTemplate.sh
 RUN  chmod +x /usr/bmap/shareAlgorithm.sh
 RUN  chmod +x /usr/bmap/ingestData.sh
