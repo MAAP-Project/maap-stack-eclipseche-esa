@@ -172,25 +172,20 @@ def sendARequest(url) :
 #########################################################################
 def ingestTheData(criteria_list, destination):
        
-        print('5- Your metadata are : ' + str(criteria_list))
-        print('destination')
-        url = url_root + "catalogue/granule/private/add?dataPath=" + destination  + "&dataFormat=" + criteria_list['dataFormat'] + "&userId=" + str(criteria_list['userId'])
-        print(url)
-		if criteria_list['subregionName']
-			url = url+ "&subregionName=" + criteria_list['subregionName']
-		if criteria_list['polarization']
-			url = url+ "&polarization=" + criteria_list['polarization']
-		
-		print(url)
-        #"&subregionName=" + criteria_list['subregionName'] + 
-        #+ "&polarization=" +criteria_list['polarization']
-        response = requests.get(url)
-        json_str = response.text
-        code = response.status_code
-        if (code == 200):
-            print("File correctly ingested")
-        else:
-            print(json_str)
+    print('5- Your metadata are : ' + str(criteria_list))
+    url = url_root + "catalogue/granule/private/add?dataPath=" + destination  + "&dataFormat=" + criteria_list['dataFormat'] + "&userId=" + str(criteria_list['userId'])
+    if criteria_list['subregionName']:
+        url = url+ "&subregionName=" + criteria_list['subregionName']
+    if criteria_list['polarization']:
+        url = url+ "&polarization=" + criteria_list['polarization']
+
+    response = requests.get(url)
+    json_str = response.text
+    code = response.status_code
+    if (code == 200):
+      print("File correctly ingested")
+    else:
+      print(json_str)
 ######################################
 
 def isROIfileExistAll(datapath) :
