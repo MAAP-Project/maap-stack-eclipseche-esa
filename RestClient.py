@@ -99,7 +99,7 @@ def get_granules_by_criteria(input_file: str='datacriteria.properties',formatmet
         except:
             pass
         try : 
-            collectionNames = data_criteria['collection_names']
+            collectionNames = data_criteria['collection_Names']
             if len(collectionNames) > 0:
                 criteria_list['"collectionNames"'] = to_table_string(collectionNames)
         except:
@@ -125,7 +125,9 @@ def get_granules_by_criteria(input_file: str='datacriteria.properties',formatmet
                     json_obj = json.loads(json_str)
                     #return filter_by_scene(json_obj, data_criteria['scene_name'].split(','))
                     if data_criteria['scene_name']:
+                        print(data_criteria['scene_name'].split(','))
                         json_obj=filter_by_scene(json_obj, data_criteria['scene_name'].split(','))
+                        
                         if formatmetadata == True:
                             return format_metadata(json_obj)
                         else:
@@ -157,10 +159,12 @@ def to_table_string(string: str) -> str:
 
 
 def filter_by_scene(json_result, scene_list):
+
     for granule in json_result[:] : 
         scene = granule['Granule']['granuleScene']
         if scene:
             scene=granule['Granule']['granuleScene']['Granule']['name']
+            print(scene)
             if not scene in scene_list : 
                 json_result.remove(granule)
              
@@ -244,157 +248,157 @@ def format_metadata(json_result):
     
     # Init
     data_stack = dataset()
-    
-    data_stack.campaign = json_result[0]['Granule']['collection']['Collection']['shortName']
-    #if the research asked some specific scenes
-    
-    
+    print(len(json_result))
+    if json_result and len(json_result) == 5:
+        data_stack.campaign = json_result[0]['Granule']['collection']['Collection']['shortName']
+        #if the research asked some specific scenes
         
-    # All the data of the collections are returned and the scene list must be extract from the granules
-    for granule in json_result :
-        if granule['Granule']['productType']=='SLC':
-            scene=granule['Granule']['granuleScene']['Granule']['name']   
-            #add scene in the list avoiding duplicates
+        
             
-            
-            ## inputfilenames
-            polarisation=granule['Granule']['polarization']
-            key=(scene,polarisation)
-            value=granule['Granule']['name']
-            url=get_url(data_stack.campaign,value)
-            
-            data_stack.SLClist.update(dict([(key,value)]))
-            data_stack.SLCFilenames.update(dict([(key,url)]))
-            if not scene in data_stack.scenes:
-                #append scenes and all metadata of the scene
-                data_stack.scenes.append(scene)            
+        # All the data of the collections are returned and the scene list must be extract from the granules
+        for granule in json_result :
+            if granule['Granule']['productType']=='SLC':
+                scene=granule['Granule']['granuleScene']['Granule']['name']   
+                #add scene in the list avoiding duplicates
                 
                 
+                ## inputfilenames
+                polarisation=granule['Granule']['polarization']
+                key=(scene,polarisation)
+                value=granule['Granule']['name']
+                url=get_url(data_stack.campaign,value)
+                
+                data_stack.SLClist.update(dict([(key,value)]))
+                data_stack.SLCFilenames.update(dict([(key,url)]))
+                if not scene in data_stack.scenes:
+                    #append scenes and all metadata of the scene
+                    data_stack.scenes.append(scene)            
                     
-                #### heading
-                keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['heading'])])
-                data_stack.heading.update(keyval)
-                #z_flight
-                keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['zFlight'])])
-                data_stack.z_flight.update(keyval)
-                ##z_terrain
-                keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['zTerrain'])])
-                data_stack.z_terrain.update(keyval)
-                ##GRD_resol
-                keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['grdResol'])])
-                data_stack.GRD_resol.update(keyval)
-                ##pixel_spacing
-                keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['pixelSpacing'])])
-                data_stack.pixel_spacing.update(keyval)
-                ##surface_resol
-                keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['surfaceResol'])])
-                data_stack.surface_resol.update(keyval)
-                
-                ##SLR_start
-                keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['slrStart'])])
-                data_stack.SLR_start.update(keyval)
-                
-                ##master
-                #search for the presence of az files in the file list of the granule
-                #bool_list=bool(re.search("az.tiff",data)) for data in granule['Granule']['granuleScene']['Granule']['granuleList']]                    
-                #if True in bool_list : 
-                keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['master'])])
-                data_stack.master.update(keyval)
-                ##demname
-                keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['dem'])])
-                data_stack.demname.update(keyval)
-                
-                ##demFilenames
-                demname=granule['Granule']['granuleScene']['Granule']['dem']
-                #if a dem is referenced, try to get its filename
-                if len(demname)>0:
-                    try :
-                        demfilename=get_url(data_stack.campaign,data_stack.campaign+'_'+demname+'_dem.tiff')
+                    
                         
-                    except:
-                        demfilename=''
-                else : 
-                        demfilename=''
-                keyval=dict([(scene,demfilename)])
-                data_stack.demFilenames.update(keyval)
-                
-                ##azfilenames
-                #search for the presence of az files in the file list of the granule
-                bool_list=[bool(re.search("az.tiff",data)) for data in granule['Granule']['granuleScene']['Granule']['granuleList']]     
-                if True in bool_list :
-                    azfile=granule['Granule']['granuleScene']['Granule']['granuleList'][bool_list.index(True)]
-                    azfile=get_url(data_stack.campaign,azfile)
-                elif  granule['Granule']['granuleScene']['Granule']['master']!='n/a':
-                    #get master name and get its azimtuh
-                    master=granule['Granule']['granuleScene']['Granule']['master']
+                    #### heading
+                    keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['heading'])])
+                    data_stack.heading.update(keyval)
+                    #z_flight
+                    keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['zFlight'])])
+                    data_stack.z_flight.update(keyval)
+                    ##z_terrain
+                    keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['zTerrain'])])
+                    data_stack.z_terrain.update(keyval)
+                    ##GRD_resol
+                    keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['grdResol'])])
+                    data_stack.GRD_resol.update(keyval)
+                    ##pixel_spacing
+                    keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['pixelSpacing'])])
+                    data_stack.pixel_spacing.update(keyval)
+                    ##surface_resol
+                    keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['surfaceResol'])])
+                    data_stack.surface_resol.update(keyval)
                     
-                    if len(master)>0:
-                        try : 
-                            master_granules=get_granule_by_name(data_stack.campaign+':@'+master)['Granule']['granuleList']
+                    ##SLR_start
+                    keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['slrStart'])])
+                    data_stack.SLR_start.update(keyval)
+                    
+                    ##master
+                    #search for the presence of az files in the file list of the granule
+                    #bool_list=bool(re.search("az.tiff",data)) for data in granule['Granule']['granuleScene']['Granule']['granuleList']]                    
+                    #if True in bool_list : 
+                    keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['master'])])
+                    data_stack.master.update(keyval)
+                    ##demname
+                    keyval=dict([(scene,granule['Granule']['granuleScene']['Granule']['dem'])])
+                    data_stack.demname.update(keyval)
+                    
+                    ##demFilenames
+                    demname=granule['Granule']['granuleScene']['Granule']['dem']
+                    #if a dem is referenced, try to get its filename
+                    if len(demname)>0:
+                        try :
+                            demfilename=get_url(data_stack.campaign,data_stack.campaign+'_'+demname+'_dem.tiff')
                             
-                            azfile=[file for file in master_granules if "az" in file][0]      
-                            azfile=get_url(data_stack.campaign,azfile)
-                        except: 
+                        except:
+                            demfilename=''
+                    else : 
+                            demfilename=''
+                    keyval=dict([(scene,demfilename)])
+                    data_stack.demFilenames.update(keyval)
+                    
+                    ##azfilenames
+                    #search for the presence of az files in the file list of the granule
+                    bool_list=[bool(re.search("az.tiff",data)) for data in granule['Granule']['granuleScene']['Granule']['granuleList']]     
+                    if True in bool_list :
+                        azfile=granule['Granule']['granuleScene']['Granule']['granuleList'][bool_list.index(True)]
+                        azfile=get_url(data_stack.campaign,azfile)
+                    elif  granule['Granule']['granuleScene']['Granule']['master']!='n/a':
+                        #get master name and get its azimtuh
+                        master=granule['Granule']['granuleScene']['Granule']['master']
+                        
+                        if len(master)>0:
+                            try : 
+                                master_granules=get_granule_by_name(data_stack.campaign+':@'+master)['Granule']['granuleList']
+                                
+                                azfile=[file for file in master_granules if "az" in file][0]      
+                                azfile=get_url(data_stack.campaign,azfile)
+                            except: 
+                                azfile=''
+                        else:
                             azfile=''
                     else:
                         azfile=''
-                else:
-                    azfile=''
-                keyval=dict([(scene,azfile)])
-                data_stack.azimuthFiles.update(keyval)
-                
-                ##rgfilenames
-                bool_list=[bool(re.search("rg.tiff",data)) for data in granule['Granule']['granuleScene']['Granule']['granuleList']]     
-                if True in bool_list :
-                    rgfile=granule['Granule']['granuleScene']['Granule']['granuleList'][bool_list.index(True)]
-                    rgfile=get_url(data_stack.campaign,rgfile)
-                elif  granule['Granule']['granuleScene']['Granule']['master']!='n/a':
-                    #get master name and get its azimtuh
-                    master=granule['Granule']['granuleScene']['Granule']['master']
-                    if len(master)>0:
-                        try : 
-                            master_granules=get_granule_by_name(data_stack.campaign+':@'+master)['Granule']['granuleList']
-                            rgfile=[file for file in master_granules if "rg" in file][0]    
-                            rgfile=get_url(data_stack.campaign,rgfile)
-                        except: 
+                    keyval=dict([(scene,azfile)])
+                    data_stack.azimuthFiles.update(keyval)
+                    
+                    ##rgfilenames
+                    bool_list=[bool(re.search("rg.tiff",data)) for data in granule['Granule']['granuleScene']['Granule']['granuleList']]     
+                    if True in bool_list :
+                        rgfile=granule['Granule']['granuleScene']['Granule']['granuleList'][bool_list.index(True)]
+                        rgfile=get_url(data_stack.campaign,rgfile)
+                    elif  granule['Granule']['granuleScene']['Granule']['master']!='n/a':
+                        #get master name and get its azimtuh
+                        master=granule['Granule']['granuleScene']['Granule']['master']
+                        if len(master)>0:
+                            try : 
+                                master_granules=get_granule_by_name(data_stack.campaign+':@'+master)['Granule']['granuleList']
+                                rgfile=[file for file in master_granules if "rg" in file][0]    
+                                rgfile=get_url(data_stack.campaign,rgfile)
+                            except: 
+                                rgfile=''
+                        else:
                             rgfile=''
                     else:
                         rgfile=''
-                else:
-                    rgfile=''
-                keyval=dict([(scene,rgfile)])
-                data_stack.rangeFiles.update(keyval)
-                
-                ##incfilenames
-                bool_list=[bool(re.search("inc.tiff",data)) for data in granule['Granule']['granuleScene']['Granule']['granuleList']]     
-                if True in bool_list :
-                    incfile=granule['Granule']['granuleScene']['Granule']['granuleList'][bool_list.index(True)]
-                    incfile=get_url(data_stack.campaign,incfile)
-                elif  granule['Granule']['granuleScene']['Granule']['master']!='n/a':
-                    #get master name and get its azimtuh
-                    master=granule['Granule']['granuleScene']['Granule']['master']
-                    if len(master)>0:
-                        try : 
-                            master_granules=get_granule_by_name(data_stack.campaign+':@'+master)['Granule']['granuleList']
-                            incfile=[file for file in master_granules if "inc" in file][0] 
-                            incfile=get_url(data_stack.campaign,incfile)
-                        except: 
+                    keyval=dict([(scene,rgfile)])
+                    data_stack.rangeFiles.update(keyval)
+                    
+                    ##incfilenames
+                    bool_list=[bool(re.search("inc.tiff",data)) for data in granule['Granule']['granuleScene']['Granule']['granuleList']]     
+                    if True in bool_list :
+                        incfile=granule['Granule']['granuleScene']['Granule']['granuleList'][bool_list.index(True)]
+                        incfile=get_url(data_stack.campaign,incfile)
+                    elif  granule['Granule']['granuleScene']['Granule']['master']!='n/a':
+                        #get master name and get its azimtuh
+                        master=granule['Granule']['granuleScene']['Granule']['master']
+                        if len(master)>0:
+                            try : 
+                                master_granules=get_granule_by_name(data_stack.campaign+':@'+master)['Granule']['granuleList']
+                                incfile=[file for file in master_granules if "inc" in file][0] 
+                                incfile=get_url(data_stack.campaign,incfile)
+                            except: 
+                                incfile=''
+                        else:
                             incfile=''
                     else:
                         incfile=''
-                else:
-                    incfile=''
-                keyval=dict([(scene,incfile)])
-                data_stack.incFilenames.update(keyval)
-                               
-                ##kzfilenames
-                bool_list=[bool(re.search("kz.tiff",data)) for data in granule['Granule']['granuleScene']['Granule']['granuleList']]     
-                if True in bool_list :
-                    kzfile=granule['Granule']['granuleScene']['Granule']['granuleList'][bool_list.index(True)]
-                    kzfile=get_url(data_stack.campaign,kzfile)
-                else:
-                    kzfile=''
-                keyval=dict([(scene,kzfile)])
-                data_stack.kzFilenames.update(keyval)
-    return data_stack
-    
+                    keyval=dict([(scene,incfile)])
+                    data_stack.incFilenames.update(keyval)
+                                   
+                    ##kzfilenames
+                    bool_list=[bool(re.search("kz.tiff",data)) for data in granule['Granule']['granuleScene']['Granule']['granuleList']]     
+                    if True in bool_list :
+                        kzfile=granule['Granule']['granuleScene']['Granule']['granuleList'][bool_list.index(True)]
+                        kzfile=get_url(data_stack.campaign,kzfile)
+                    else:
+                        kzfile=''
+                    keyval=dict([(scene,kzfile)])
+                    data_stack.kzFilenames.update(keyval)
+        return data_stack

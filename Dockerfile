@@ -76,14 +76,16 @@ COPY RestClient.py /usr/bmap/RestClient.py
 COPY quicklook_raster.py /usr/bmap/quicklook_raster.py
 COPY ingestData.py /usr/bmap/ingestData.py
 COPY ingestData.sh /usr/bmap/ingestData.sh
-COPY OWSLib /usr/bmap/OWSLib
+COPY OWSLib /usr/modules/OWSLib
 
-RUN  chmod +x /usr/bmap/OWSLib
+RUN  chmod +x /usr/modules/OWSLib
 RUN  chmod +x /usr/bmap/initTemplate.sh
 RUN  chmod +x /usr/bmap/shareAlgorithm.sh
 RUN  chmod +x /usr/bmap/ingestData.sh
 ENV PATH="/usr/bmap/:${PATH}"
 ENV PYTHONPATH="/usr/bmap/:${PYTHONPATH}"
+ENV PATH="/usr/modules/:${PATH}"
+ENV PYTHONPATH="/usr/modules/:${PYTHONPATH}"
 #We add env variable to request the back end
 ENV BMAP_BACKEND_URL=http://backend-val.biomass-maap.com/bmap-web/
 
